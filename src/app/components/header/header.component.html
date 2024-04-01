@@ -2,7 +2,7 @@
   <a routerLink="home">WebShop</a>
   <!-- Botão para abrir o menu -->
   <button mat-icon-button [mat-menu-trigger-for]="menu">
-    <mat-icon [matBadge]="12" matBadgeColor="warn">shopping_cart</mat-icon>
+    <mat-icon [matBadge]="itemsQuantity" [matBadgeHidden]="!itemsQuantity" matBadgeColor="warn">shopping_cart</mat-icon>
   </button>
   <!-- Valor do botão para abrir o menu matMenu -->
   <mat-menu #menu="matMenu">
@@ -11,18 +11,10 @@
         <span>1 item</span>
         <a routerLink="cart">Cart</a>
       </div>
-      <div class="py-3">
-        <div class="flex justify-between font-light mb-2">
-          KeyBoard x 1
-          <span>{{'150' | currency}}</span>
-        </div>
-        <div class="flex justify-between font-light mb-2">
-          KeyBoard x 1
-          <span>{{'150' | currency}}</span>
-        </div>
-        <div class="flex justify-between font-light mb-2">
-          KeyBoard x 1
-          <span>{{'150' | currency}}</span>
+      <div class="py-3" *ngIf="cart.items.length">
+        <div *ngFor="let item of cart.items" class="flex justify-between font-light mb-2">
+          {{item.name}} x {{item.quantity}}
+          <span>{{item.price| currency}}</span>
         </div>
       </div>
       <div>
