@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product.model';
+import { StoreService } from '../../services/store.service';
+import { Subscription } from 'rxjs';
 
 const ROWS_HEIGHT: {[ id:number ]: number} = {1: 400, 3: 335, 4: 350}
 
@@ -9,15 +11,32 @@ const ROWS_HEIGHT: {[ id:number ]: number} = {1: 400, 3: 335, 4: 350}
   templateUrl: './home.component.html',
 })
 
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   cols = 3
   rowHeight = ROWS_HEIGHT[this.cols]
   category: string | undefined;
-  constructor(private cartService: CartService) { }
+  products: Product[] | undefined
+  count = '12';
+  sort = 'desc';
+  productsSubscription: Subscription | undefined;
+
+  constructor(private cartService: CartService, private storeService: StoreService) { }
 
   ngOnInit(): void {
-    // console.log(ROWS_HEIGHT)
+
   }
+
+  ngOnDestroy(): void {
+    if (this.productsSubscription) {
+      this.productsSubscription.unsubscribe();
+    }
+  }
+
+  getProducts(): void {
+    this.productsSubscription = this.storeService.getAllProducts(this.count, this.sort)
+    .subscribe((_products)=> this.products = _products)
+  }
+
   onColumnsCountChange(colsNum: number){
    this.cols = colsNum;
    this.rowHeight = ROWS_HEIGHT[this.cols]
